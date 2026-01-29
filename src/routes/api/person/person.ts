@@ -1,14 +1,14 @@
 import { Router } from "express";
-import * as coreController from './core.controller.js';
+import * as personController from './person.controller.js';
 
 const router = Router();
 
 /**
  * @openapi
- * /api/search:
+ * /api/person/search:
  *   get:
  *     tags:
- *       - Core
+ *       - Search
  *     summary: Get a sorted list of people scored according to relevance of query match
  *     description: Returns an array of people with a score and list of matching fields based on a substring search, sorted descending by score.
  *     parameters:
@@ -44,8 +44,6 @@ const router = Router();
  *                   - score
  *                   - matches
  */
-router.get('/search', coreController.search);
-
-// TODO: add music artist
+router.get('/search', personController.search);
 
 export default router;

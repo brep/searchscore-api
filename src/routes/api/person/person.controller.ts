@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import personStore, { type Person } from '../../stores/person.js';
-import artistStore from "../../stores/artist.js";
+import personStore, { type Person } from '../../../stores/person.js';
+import artistStore from "../../../stores/artist.js";
 
 interface PersonSearchResult {
     person: Person;
@@ -14,7 +14,7 @@ interface ScoredPersonSearchResult {
 }
 
 /**
- * search: find people whose string | string[] properties include the query string (TODO: example)
+ * search: find people whose string | string[] properties include the query string
  * @param query: string to search for
  * @return sorted array of ScoredPersonSearchResult, sorted first by descending score, then ascending name
  */
@@ -76,7 +76,7 @@ function searchCore(query: string, people: Person[]) : PersonSearchResult[] {
     // check query match on artists within person's musicGenre
     if (person.musicGenre) {
       const artists = artistStore.getArtistsByGenre(...person.musicGenre);
-      const matchingArtist = artists.find(artist => artist.name.toLowerCase().includes(query));
+      const matchingArtist = artists.find(artist => artist.toLowerCase().includes(query));
       if (matchingArtist)
         matches.push('musicGenre');
     }

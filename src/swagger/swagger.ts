@@ -5,7 +5,7 @@ const options = {
     openapi: '3.0.0',
     info: {
       title: 'Search Score API',
-      version: '1.0.0',
+      version: '0.0.1',
     },
   },
   apis: ['./dist/routes/**/*.js']
