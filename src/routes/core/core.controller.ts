@@ -7,9 +7,16 @@ interface PersonSearchResult {
     matches: string[];
 }
 
+interface ScoredPersonSearchResult {
+    name: string;
+    score: number;
+    matches: string[];
+}
+
 /**
  * search: find people whose string | string[] properties include the query string (TODO: example)
  * @param query: string to search for
+ * @return sorted array of ScoredPersonSearchResult, sorted first by descending score, then ascending name
  */
 export const search = (req: Request, res: Response) : void => {
   if (typeof req.query.query !== 'string' || req.query.query.trim() === '')
@@ -20,7 +27,7 @@ export const search = (req: Request, res: Response) : void => {
   let searchResults = searchCore(query, people);
 
   // compute score
-  const sortedScoredResults = searchResults.map(result => ({
+  const sortedScoredResults: ScoredPersonSearchResult[] = searchResults.map(result => ({
     name: result.person.name,
     score: computeScore(result),
     matches: result.matches
@@ -35,6 +42,12 @@ export const search = (req: Request, res: Response) : void => {
   res.json(sortedScoredResults);
 };
 
+/**
+ * searchCore: find people whose string | string[] properties include the query string, as well as whos musicGenre contains an artist matching the query
+ * @param query: string to search for
+ * @param people: array of Person objects to search within
+ * @return {PersonSearchResult[]} array of PersonSearchResult objects
+ */
 function searchCore(query: string, people: Person[]) : PersonSearchResult[] {
   let filtered: PersonSearchResult[] = [];
 
@@ -79,15 +92,20 @@ function searchCore(query: string, people: Person[]) : PersonSearchResult[] {
   return filtered;
 }
 
-// TODO: can be improved: if the names of any of these properties are ever changed, have to remember to update here too
-const scoreWeights: { [key: string]: number } = {
-  name: 4,
-  artist: 2,
-  movies: 1,
-  location: 1,
-  musicGenre: 1
-};
+/**
+ * computeScore: compute score for a PersonSearchResult based on which properties matched
+ * @param personSearchResult: PersonSearchResult to compute score for
+ * @return {number} score for the PersonSearchResult
+ */
 function computeScore(personSearchResult: PersonSearchResult) : number {
+  // TODO: can be improved: if the names of any of these properties are ever changed, have to remember to update here too
+  const scoreWeights: { [key: string]: number } = {
+    name: 4,
+    artist: 2,
+    movies: 1,
+    location: 1,
+    musicGenre: 1
+  };
   let score = 0;
   for (let match of personSearchResult.matches) {
     score += scoreWeights[match] || 0;
