@@ -7,8 +7,12 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/', coreRoutes);
+
+app.get('/', (req, res) => {
+  res.redirect('/docs');
+});
 app.use('/docs', docRoutes);
+app.use('/api', coreRoutes);
 
 app.listen(PORT, () => {
   console.log(`Search Score API listening on port ${PORT}!`)

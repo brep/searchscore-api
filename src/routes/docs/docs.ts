@@ -5,15 +5,6 @@ import openapiSpecification from '../../swagger/swagger.js';
 
 const router = Router();
 
-/**
- * @openapi
- * /:
- *   get:
- *     description: Hello World!!
- *     responses:
- *       200:
- *         description: Returns a magic string.
- */
 router.use(
   '/',
   swaggerUi.serve,
