@@ -24,6 +24,7 @@ documentation endpoint: /docs
         add logging in general
         console.log => use logging library or at least wrap in custom logger
     - If backend queried an actual database, should sanitize user input
+    - for tests testing for error response, instead of checking strictly against 500, better to check toNotBe(<expected success code>) so tests dont break in future if we change response code for e.g. invalid input to something like 400 bad request
     - TODOs
 
 # General Notes:
