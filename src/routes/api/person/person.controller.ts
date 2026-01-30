@@ -22,7 +22,8 @@ export const search = (req: Request, res: Response) : void => {
   if (typeof req.query.query !== 'string' || req.query.query.trim() === '')
     throw new Error('expected single "query" parameter, e.g. ?query=eddy');
 
-  const query = req.query.query.toLowerCase();
+  // TODO: can improve calling trim() twice, just makes code nicer
+  const query = req.query.query.toLowerCase().trim();
   const people = personStore.getPeople();
   let searchResults = searchCore(query, people);
 
@@ -78,7 +79,7 @@ function searchCore(query: string, people: Person[]) : PersonSearchResult[] {
       const artists = artistStore.getArtistsByGenre(...person.musicGenre);
       const matchingArtist = artists.find(artist => artist.toLowerCase().includes(query));
       if (matchingArtist)
-        matches.push('musicGenre');
+        matches.push('artists');
     }
 
     if (matches.length > 0) {
@@ -101,7 +102,7 @@ function computeScore(personSearchResult: PersonSearchResult) : number {
   // TODO: can be improved: if the names of any of these properties are ever changed, have to remember to update here too
   const scoreWeights: { [key: string]: number } = {
     name: 4,
-    artist: 2,
+    artists: 2,
     movies: 1,
     location: 1,
     musicGenre: 1

@@ -12,6 +12,12 @@ describe('Test Artist routes', () => {
         expect(response.status).toBe(500);
         response = await request(app).post(artistEndpoint).send({ });
         expect(response.status).toBe(500);
+        response = await request(app).post(artistEndpoint).send({ name: '', genre: '' });
+        expect(response.status).toBe(500);
+        response = await request(app).post(artistEndpoint).send({ name: 'abc', genre: '' });
+        expect(response.status).toBe(500);
+        response = await request(app).post(artistEndpoint).send({ name: '', genre: 'def' });
+        expect(response.status).toBe(500);
         response = await request(app).post(artistEndpoint).send({ name: 1234, genre: 5678 });
         expect(response.status).toBe(500);
         response = await request(app).post(artistEndpoint).send({ name: 'test', genre: 5678 });
@@ -24,7 +30,7 @@ describe('Test Artist routes', () => {
         expect(response.status).toBe(201);
     });
     it(`POST ${artistEndpoint} should fail with duplicate`, async () => {
-        let response = await request(app).post(artistEndpoint).send({ name: 'Sublime', genre: 'Ska' });
+        let response = await request(app).post(artistEndpoint).send({ name: 'sUbLime', genre: 'sKa' });
         expect(response.status).toBe(409);
     });
 });

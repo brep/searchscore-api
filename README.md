@@ -5,9 +5,9 @@ documentation endpoint: /docs
 -   routes/
         api/
             artist/
-                (artist routes, controller, tests)
+                (artist routes, controller, route tests)
             person/
-                (person routes, controller, tests)
+                (person routes, controller, route tests)
         docs/
             (documentation route)
     stores/
@@ -23,6 +23,7 @@ documentation endpoint: /docs
     - Logging:
         add logging in general
         console.log => use logging library or at least wrap in custom logger
+    - If backend queried an actual database, should sanitize user input
     - TODOs
 
 # General Notes:

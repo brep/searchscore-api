@@ -8,7 +8,7 @@ const router = Router();
  * /api/person/search:
  *   get:
  *     tags:
- *       - Search
+ *       - Person
  *     summary: Get a sorted list of people scored according to relevance of query match
  *     description: Returns an array of people with a score and list of matching fields based on a substring search, sorted descending by score.
  *     parameters:
