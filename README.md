@@ -1,13 +1,32 @@
-# GitHub Codespaces ♥️ Express
+# Documentation
+documentation endpoint: /docs
 
-Welcome to your shiny new Codespace running Express! We've got everything fired up and running for you to explore Express.
+# Structure:
+-   routes/
+        api/
+            artist/
+                (artist routes, controller, route tests)
+            person/
+                (person routes, controller, route tests)
+        docs/
+            (documentation route)
+    stores/
+        artist/
+        person/
+    swagger/
+        (OpenAPI documentation)
 
-You've got a blank canvas to work on from a git perspective as well. There's a single initial commit with the what you're seeing right now - where you go from here is up to you!
+# Dev env:
+- hot reloading via nodemon and ts-node
 
-Everything you do here is contained within this one codespace. There is no repository on GitHub yet. If and when you’re ready you can click "Publish Branch" and we’ll create your repository and push up your project. If you were just exploring then and have no further need for this code then you can simply delete your codespace and it's gone forever.
+# Improve:
+    - Logging:
+        add logging in general
+        console.log => use logging library or at least wrap in custom logger
+    - If backend queried an actual database, should sanitize user input
+    - TODOs
 
-To run this application:
-
-```
-npm start
-```
+# General Notes:
+- AI used in the generation of OpenAPI JSDoc comments and transforming text data set into JSON
+- For code generation: no generative AI used, (discounting VS Code autocomplete) nor was AI used in testing or reviewing the code
+    - when working typically even if I did not use gen AI, I would have reviewed the code and tests with AI, but for a task of this size felt that was akin to cheating
