@@ -20,6 +20,12 @@ describe('Test Person routes', () => {
         expect(Array.isArray(response.body)).toBe(true);
         expect(response.body.length).toBe(4);
         expect(response.headers['x-cache']).toBe('HIT');
+        // different query, expect cache miss
+        response = await request(app).get(personSearchEndpoint).query({ query: 'the' });
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.length).toBe(4);
+        expect(response.headers['x-cache']).toBe('MISS');
         // add artist to invalidate cache
         response = await request(app).post(artistEndpoint).send({ name: 'test', genre: 'test' });
         expect(response.status).toBe(201);
