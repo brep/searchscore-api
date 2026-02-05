@@ -7,7 +7,7 @@ import type { Request, Response } from "express";
  * @param name the name of the artist
  * @param res 201 if successfully created, 409 if duplicate exists 
  */
-export const add = (req: Request<{ genre: string; name: string }>, res: Response) : void => {
+export const add = (req: Request, res: Response) : void => {
   let { genre, name } = req.body;
   if (!genre || !name)
     throw new Error("Invalid arguments: expected body { genre: string, name: string }");

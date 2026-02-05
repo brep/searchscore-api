@@ -22,6 +22,19 @@ export const search = (req: Request, res: Response) : void => {
   if (typeof req.query.query !== 'string' || req.query.query.trim() === '')
     throw new Error('expected single "query" parameter, e.g. ?query=eddy');
 
+  let order = 'descending';
+  let primaryProperty = 'score';
+
+  if (req.query.order && typeof(req.query.order) !== 'string')
+    throw new Error('expected string for "order" param');
+
+  order = req.query.order || order;
+
+  if (req.query.property && typeof(req.query.property) !== 'string')
+    throw new Error('expected string for "order" param');
+
+  primaryProperty = req.query.property || primaryProperty;
+
   // TODO: can improve calling trim() twice, just makes code nicer
   const query = req.query.query.toLowerCase().trim();
   const people = personStore.getPeople();
@@ -32,16 +45,41 @@ export const search = (req: Request, res: Response) : void => {
     name: result.person.name,
     score: computeScore(result),
     matches: result.matches
-  })).sort((a, b) => {
-    // sort descending by score, then ascending by name
-    let diff = b.score - a.score;
-    if (diff !== 0) 
-      return diff;
-    return a.name.localeCompare(b.name);
-  });
+  }))
+  .sort((a, b) => {
+    let result = NaN;
+    if (primaryProperty === 'name')
+      result = sortByName(a, b, order);
+    else
+      result = sortByScore(a, b, order);
+
+    if (result === 0) {
+      if (primaryProperty === 'name')
+        result = sortByScore(a, b, order);
+      else
+        result = sortByName(a, b, order);;
+    }
+
+    return result;
+  })
+  .filter(r => r.score > 0);
 
   res.json(sortedScoredResults);
 };
+
+const sortByName = (a: ScoredPersonSearchResult, b: ScoredPersonSearchResult, order: string) => {
+    if (order === 'descending')
+      return b.name.localeCompare(a.name);
+    else
+      return a.name.localeCompare(b.name);
+}
+
+const sortByScore = (a: ScoredPersonSearchResult, b: ScoredPersonSearchResult, order: string) => {
+  let diff = order === 'descending' ? b.score - a.score : a.score - b.score;
+  if (diff !== 0) 
+    return diff;
+  return 0;
+}
 
 /**
  * searchCore: find people whose string | string[] properties include the query string, as well as whos musicGenre contains an artist matching the query

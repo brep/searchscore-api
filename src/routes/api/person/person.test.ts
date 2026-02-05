@@ -7,6 +7,17 @@ const personSearchEndpoint = `${personEndpoint}/search`;
 const artistEndpoint = '/api/artist';
 
 describe('Test Person routes', () => {
+    it(`GET ${personSearchEndpoint} test optional query params`, async () => {
+        let response = await request(app).get(personSearchEndpoint).query({ query: 'ed', property: 'name', order: 'ascending' })
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.length).toBe(4);
+        let names: string[] = response.body.map((r: any) => r.name);
+        expect(names[0]).toBe('Doug Akridge');
+        expect(names[1]).toBe('Eddy Verde');
+        expect(names[2]).toBe('Greta Heissenberger');
+        expect(names[3]).toBe('Jason Leo');
+    });
     it(`GET ${personSearchEndpoint} query parameter invalid values should fail`, async () => {
         let response = await request(app).get(personSearchEndpoint);
         expect(response.status).toBe(500);
@@ -25,8 +36,8 @@ describe('Test Person routes', () => {
         let names: string[] = response.body.map((r: any) => r.name);
         expect(names[0]).toBe('Eddy Verde');
         expect(names[1]).toBe('Greta Heissenberger');
-        expect(names[2]).toBe('Doug Akridge');
-        expect(names[3]).toBe('Jason Leo');
+        expect(names[2]).toBe('Jason Leo');
+        expect(names[3]).toBe('Doug Akridge');
         expect(response.body[0].score).toBe(6);
         expect(response.body[1].score).toBe(3);
         expect(response.body[2].score).toBe(2);
@@ -39,9 +50,9 @@ describe('Test Person routes', () => {
         expect(response.body.length).toBe(4);
         let names: string[] = response.body.map((r: any) => r.name);
         expect(names[0]).toBe('Jason Leo');
-        expect(names[1]).toBe('Eddy Verde');
+        expect(names[1]).toBe('Justin Coker');
         expect(names[2]).toBe('Greta Heissenberger');
-        expect(names[3]).toBe('Justin Coker');
+        expect(names[3]).toBe('Eddy Verde');
         expect(response.body[0].score).toBe(3);
         expect(response.body[1].score).toBe(1);
         expect(response.body[2].score).toBe(1);
