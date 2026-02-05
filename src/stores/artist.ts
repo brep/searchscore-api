@@ -1,3 +1,5 @@
+import eventManager from '../event/eventManager.js';
+
 /** 
  * TODO: Note: if we wanted to keep the "display names" of the artists,
  * we could make this set use a Map<string, string> where the key is the lowercased name, value is the display name,
@@ -80,7 +82,10 @@ class ArtistStore {
         let set = this.artists[genreKey];
         let prevSize = set.size;
         set.add(artistName);
-        return (prevSize !== set.size);
+        let added = (prevSize !== set.size);
+        if (added)
+            eventManager.emit('dataChanged', 'artist');
+        return added;
     }
 }
 

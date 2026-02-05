@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import personStore, { type Person } from '../../../stores/person.js';
 import artistStore from "../../../stores/artist.js";
+import memoryCache from "../../../cache/cache.js";
 
 interface PersonSearchResult {
     person: Person;
@@ -19,6 +20,19 @@ interface ScoredPersonSearchResult {
  * @return sorted array of ScoredPersonSearchResult, sorted first by descending score, then ascending name
  */
 export const search = (req: Request, res: Response) : void => {
+
+  // check cache
+  let cached = memoryCache.get(req.url);
+  if (cached) {
+      if (cached.body) {
+        res.setHeader('X-Cache', 'HIT');
+        res.send(cached.body);
+      }
+      return;
+  }
+  // no cached results
+  res.setHeader('X-Cache', 'MISS');
+
   if (typeof req.query.query !== 'string' || req.query.query.trim() === '')
     throw new Error('expected single "query" parameter, e.g. ?query=eddy');
 
@@ -38,6 +52,11 @@ export const search = (req: Request, res: Response) : void => {
     if (diff !== 0) 
       return diff;
     return a.name.localeCompare(b.name);
+  });
+
+  // cache results
+  memoryCache.set(req.url, {
+    body: sortedScoredResults
   });
 
   res.json(sortedScoredResults);

@@ -7,6 +7,35 @@ const personSearchEndpoint = `${personEndpoint}/search`;
 const artistEndpoint = '/api/artist';
 
 describe('Test Person routes', () => {
+    it(`GET ${personSearchEndpoint} cached search results`, async () => {
+        // run query, should be miss
+        let response = await request(app).get(personSearchEndpoint).query({ query: 'ed' });
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.length).toBe(4);
+        expect(response.headers['x-cache']).toBe('MISS');
+        // run same query again, expect cache hit
+        response = await request(app).get(personSearchEndpoint).query({ query: 'ed' });
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.length).toBe(4);
+        expect(response.headers['x-cache']).toBe('HIT');
+        // add artist to invalidate cache
+        response = await request(app).post(artistEndpoint).send({ name: 'test', genre: 'test' });
+        expect(response.status).toBe(201);
+        // run query, should be miss
+        response = await request(app).get(personSearchEndpoint).query({ query: 'ed' });
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.length).toBe(4);
+        expect(response.headers['x-cache']).toBe('MISS');
+        // run same query again, expect cache hit
+        response = await request(app).get(personSearchEndpoint).query({ query: 'ed' });
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body.length).toBe(4);
+        expect(response.headers['x-cache']).toBe('HIT');
+    });
     it(`GET ${personSearchEndpoint} query parameter invalid values should fail`, async () => {
         let response = await request(app).get(personSearchEndpoint);
         expect(response.status).toBe(500);
